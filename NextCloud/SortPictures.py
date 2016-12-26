@@ -13,28 +13,32 @@ destin_path = '/media/drivemount/user/files/Photos'
 # Il false copy file and dont' remove old
 remove_old_files = False
 
+# various configurations
+append_orginal_filename = False
+pre_filename = 'IMG_'
+
 # check if destination path is existing create if not
 if not os.path.exists(destin_path):
     os.makedirs(destin_path)
 
 # file hash function
 def hash_file(filename):
+    
+    # make a hash object
+    h = hashlib.sha1()
 
-   # make a hash object
-   h = hashlib.sha1()
+    # open file for reading in binary mode
+    with open(filename,'rb') as file:
 
-   # open file for reading in binary mode
-   with open(filename,'rb') as file:
+        # loop till the end of the file
+        chunk = 0
+        while chunk != b'':
+            # read only 1024 bytes at a time
+            chunk = file.read(1024)
+            h.update(chunk)
 
-       # loop till the end of the file
-       chunk = 0
-       while chunk != b'':
-           # read only 1024 bytes at a time
-           chunk = file.read(1024)
-           h.update(chunk)
-
-   # return the hex representation of digest
-   return h.hexdigest()
+    # return the hex representation of digest
+    return h.hexdigest()
 
 # picture date taken function
 def date_taken_info(filename):
@@ -59,7 +63,7 @@ def date_taken_info(filename):
         hour   = str(datetaken_object.hour).zfill(2)
 
         # New Filename
-        output = [day,month,year,year + month + day + '-' + hour + minute + second]
+        output = [day,month,year,year + month + day + '_' + hour + minute + second]
         return output
 
     except:
@@ -72,7 +76,11 @@ for file in os.listdir(source_path):
         dateinfo = date_taken_info(filename)
         try:
             out_filepath = destin_path + os.sep + dateinfo[2] + os.sep + dateinfo[1]
-            out_filename = out_filepath + os.sep + dateinfo[3] + '_' + file
+            if append_original_filename:
+                out_filename = out_filepath + os.sep + pre_filename + dateinfo[3] + '_' + file
+            else:
+                out_filename = out_filepath + os.sep + pre_filename + dateinfo[3] + '.jpg'
+
 
             # check if destination path is existing create if not
             if not os.path.exists(out_filepath):
@@ -83,16 +91,16 @@ for file in os.listdir(source_path):
 
             # verify if file is the same and display output
             if hash_file(filename) == hash_file(out_filename):
-                print 'File copied with success to ' + out_filename
+                print('File copied with success to ' + out_filename)
                 if remove_old_files:
                     os.remove(filename)
                     print('Removed old file' + filename)
             else:
-                print 'File failed to copy :( ' + filename
+                print('File failed to copy :( ' + filename)
             
         except:
-            print 'File has no exif data skipped ' + filename
+            print('File has no exif data skipped ' + filename)
 
 
 # initate a scan
-subprocess.Popen("php /var/www/html/nextcloud/console.php files:scan --all", shell=True, stdout=subprocess.PIPE)
+# subprocess.Popen("php /var/www/html/nextcloud/console.php files:scan --all", shell=True, stdout=subprocess.PIPE)
