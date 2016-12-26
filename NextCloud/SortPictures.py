@@ -10,6 +10,9 @@ import subprocess
 source_path = '/media/drivemount/user/files/PhotosToSort'
 destin_path = '/media/drivemount/user/files/Photos'
 
+# Il false copy file and dont' remove old
+remove_old_files = False
+
 # check if destination path is existing create if not
 if not os.path.exists(destin_path):
     os.makedirs(destin_path)
@@ -81,7 +84,9 @@ for file in os.listdir(source_path):
             # verify if file is the same and display output
             if hash_file(filename) == hash_file(out_filename):
                 print 'File copied with success to ' + out_filename
-                os.remove(filename)
+                if remove_old_files:
+                    os.remove(filename)
+                    print('Removed old file' + filename)
             else:
                 print 'File failed to copy :( ' + filename
             
