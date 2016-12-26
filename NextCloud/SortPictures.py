@@ -59,7 +59,7 @@ def date_taken_info(filename):
         hour   = str(datetaken_object.hour).zfill(2)
 
         # New Filename
-        output = [day,month,year,day + month + year + '-' + hour + minute + second]
+        output = [day,month,year,year + month + day + '-' + hour + minute + second]
         return output
 
     except:
@@ -72,7 +72,7 @@ for file in os.listdir(source_path):
         dateinfo = date_taken_info(filename)
         try:
             out_filepath = destin_path + os.sep + dateinfo[2] + os.sep + dateinfo[1]
-            out_filename = out_filepath + os.sep + file
+            out_filename = out_filepath + os.sep + dateinfo[3] + '_' + file
 
             # check if destination path is existing create if not
             if not os.path.exists(out_filepath):
