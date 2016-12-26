@@ -69,7 +69,7 @@ for file in os.listdir(source_path):
         dateinfo = date_taken_info(filename)
         try:
             out_filepath = destin_path + os.sep + dateinfo[2] + os.sep + dateinfo[1]
-            out_filename = out_filepath + os.sep + dateinfo[3] + '.jpg'
+            out_filename = out_filepath + os.sep + file
 
             # check if destination path is existing create if not
             if not os.path.exists(out_filepath):
