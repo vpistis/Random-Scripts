@@ -14,7 +14,7 @@ destin_path = '/media/drivemount/user/files/Photos'
 remove_old_files = False
 
 # various configurations
-append_orginal_filename = False
+append_original_filename = False
 pre_filename = 'IMG_'
 
 # check if destination path is existing create if not
